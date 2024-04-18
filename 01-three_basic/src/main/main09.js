@@ -6,7 +6,7 @@ import gsap from "gsap";
 
 // console.log(THREE);
 
-// 目标：js控制画面全屏
+// 目标：掌握gsap设置各种动画效果
 
 // 1.创建场景
 const scene = new THREE.Scene();
@@ -76,23 +76,14 @@ var animate1 = gsap.to(cube.position, {
 });
 gsap.to(cube.rotation, { x: Math.PI, duration: 5, ease: "power1.inOut" });
 window.addEventListener("dblclick", () => {
-  // 双击控制屏幕进入全屏，退出全屏
-  const fullScreenElement = document.fullscreenElement;
-  if (!fullScreenElement) {
-    // 让画布对象全屏
-    renderer.domElement.requestFullscreen();
-  } else {
-    // 退出全屏
-    document.exitFullscreen();
-  }
   // console.log(animate1)
-  // if (animate1.isActive()) {
-  //   // 暂停
-  //   animate1.pause();
-  // } else {
-  //   // 恢复
-  //   animate1.resume();
-  // }
+  if (animate1.isActive()) {
+    // 暂停
+    animate1.pause();
+  } else {
+    // 恢复
+    animate1.resume();
+  }
 });
 function render() {
   controls.update();

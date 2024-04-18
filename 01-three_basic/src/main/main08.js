@@ -6,7 +6,7 @@ import gsap from "gsap";
 
 // console.log(THREE);
 
-// 目标：掌握gsap设置各种动画效果
+// 目标：监听页面尺寸变化，修改渲染画面
 
 // 1.创建场景
 const scene = new THREE.Scene();
