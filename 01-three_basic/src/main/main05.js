@@ -4,8 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 // console.log(THREE);
 
-// 目标：Clock该对象用于跟踪时间
-
+// 目标：requestAnimationFrame 时间参数 控制物体动画
 // 1.创建场景
 const scene = new THREE.Scene();
 // 2.创建相机
@@ -50,18 +49,19 @@ const controls = new OrbitControls(camera, renderer.domElement);
 // 添加坐标轴辅助器
 const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
-// 设置时钟
-const clock = new THREE.Clock();
-function render() {
-  // 获取时钟运行的总时长
-  let time = clock.getElapsedTime();
-  console.log("时钟运行总时长：", time);
-  // let deltaTime = clock.getDelta();
-  // console.log("两次获取时间的间隔时间：", deltaTime);
 
-  let t = time % 5;
+function render(time) {
+  // console.log(time)
+  // cube.position.x += 0.01;
+  // cube.rotation.x += 0.01;
+  // if (cube.position.x > 5) {
+  //   cube.position.x = 0;
+  // }
+  let t = (time / 1000) % 5;
   cube.position.x = t * 1;
-
+  if (cube.position.x > 5) {
+    cube.position.x = 0;
+  }
   renderer.render(scene, camera);
   // 渲染下一帧的时候就会调用render函数
   requestAnimationFrame(render);
