@@ -1,12 +1,10 @@
 import * as THREE from "three";
 // 导入轨道控制器
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-// 导入动画库
-import gsap from "gsap";
 
 // console.log(THREE);
 
-// 目标：掌握gsap设置各种动画效果
+// 目标：Clock该对象用于跟踪时间
 
 // 1.创建场景
 const scene = new THREE.Scene();
@@ -28,7 +26,7 @@ const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
 const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 // 修改物体的位置
 // cube.position.set(5, 0, 0);
-// cube.position.x = 3;
+cube.position.x = 3;
 // 缩放
 // cube.scale.set(3, 2, 1);
 // cube.scale.x = 5;
@@ -54,10 +52,16 @@ const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
 // 设置时钟
 const clock = new THREE.Clock();
-// 设置动画
-gsap.to(cube.position, { x: 5, duration: 5, ease: "power1.inOut" });
-gsap.to(cube.rotation, { x: Math.PI, duration: 5, ease: "power1.inOut" });
 function render() {
+  // 获取时钟运行的总时长
+  let time = clock.getElapsedTime();
+  console.log("时钟运行总时长：", time);
+  // let deltaTime = clock.getDelta();
+  // console.log("两次获取时间的间隔时间：", deltaTime);
+
+  let t = time % 5;
+  cube.position.x = t * 1;
+
   renderer.render(scene, camera);
   // 渲染下一帧的时候就会调用render函数
   requestAnimationFrame(render);
