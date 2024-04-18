@@ -4,7 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 // console.log(THREE);
 
-// 目标：控制3d物体缩放
+// 目标：控制3d物体移动
 
 // 1.创建场景
 const scene = new THREE.Scene();
@@ -27,11 +27,6 @@ const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 // 修改物体的位置
 // cube.position.set(5, 0, 0);
 cube.position.x = 3;
-// 缩放
-// cube.scale.set(3, 2, 1);
-// cube.scale.x = 5;
-// 旋转
-cube.rotation.set(Math.PI / 4, 0, 0, "XZY");
 // 将几何体添加到场景中
 scene.add(cube);
 // 初始化渲染器
@@ -53,7 +48,6 @@ scene.add(axesHelper);
 
 function render() {
   cube.position.x += 0.01;
-  cube.rotation.x += 0.01;
   if (cube.position.x > 5) {
     cube.position.x = 0;
   }
