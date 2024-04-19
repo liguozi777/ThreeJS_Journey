@@ -5,10 +5,19 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import gsap from "gsap";
 // 导入dat.gui
 import * as dat from "dat.gui";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
+
+// 加载hdr环境图
+const rgbeLoader = new RGBELoader();
+rgbeLoader.loadAsync("textures/hdr/002.hdr").then((texture) => {
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+  scene.background = texture;
+  scene.environment = texture;
+});
 
 // console.log(THREE);
 
-// 目标：环境贴图
+// 目标：经纬线映射贴图与HDR
 
 // 1.创建场景
 const scene = new THREE.Scene();
@@ -37,10 +46,15 @@ const sphereGeometry = new THREE.SphereGeometry(1, 20, 20);
 const material = new THREE.MeshStandardMaterial({
   metalness: 0.7,
   roughness: 0.1,
-  envMap: envMapTexture,
+  // envMap: envMapTexture,
 });
 const sphere = new THREE.Mesh(sphereGeometry, material);
 scene.add(sphere);
+
+// 给场景添加背景
+scene.background = envMapTexture;
+// 给场景所有的物体添加默认的环境贴图
+scene.environment = envMapTexture;
 
 // 灯光
 // 环境光
