@@ -8,7 +8,7 @@ import * as dat from "dat.gui";
 
 // console.log(THREE);
 
-// 目标：应用图形用户界面更改变量
+// 目标：打造酷炫的三角形
 
 // 1.创建场景
 const scene = new THREE.Scene();
@@ -24,17 +24,24 @@ camera.position.set(0, 0, 10);
 scene.add(camera);
 // 添加物体
 // 创建几何体
-const geometry = new THREE.BufferGeometry();
-const vertices = new Float32Array([
-  -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0,
-  -1.0, -1.0, 1.0,
-]);
-geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
-const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-// 根据几何体和材质创建物体
-const mesh = new THREE.Mesh(geometry, material);
-console.log(mesh);
-scene.add(mesh);
+for (let i = 0; i < 50; i++) {
+  // 每一个三角形，需要3个顶点，每个顶点需要3个值
+  const geometry = new THREE.BufferGeometry();
+  const positionArray = new Float32Array(9);
+  for (let j = 0; j < 9; j++) {
+    positionArray[j] = Math.random() * 10-5;
+  }
+  geometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(positionArray, 3)
+  );
+  let color = new THREE.Color(Math.random(), Math.random(), Math.random());
+  const material = new THREE.MeshBasicMaterial({ color: color,transparent:true,opacity:0.5 });
+  // 根据几何体和材质创建物体
+  const mesh = new THREE.Mesh(geometry, material);
+  console.log(mesh);
+  scene.add(mesh);
+}
 // 初始化渲染器
 const renderer = new THREE.WebGLRenderer();
 // 设置渲染的尺寸大小
