@@ -7,23 +7,17 @@ import gsap from "gsap";
 import * as dat from "dat.gui";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 
-// 阴影
+// 加载hdr环境图
 const rgbeLoader = new RGBELoader();
-// rgbeLoader.loadAsync("textures/hdr/002.hdr").then((texture) => {
-//   texture.mapping = THREE.EquirectangularReflectionMapping;
-//   scene.background = texture;
-//   scene.environment = texture;
-// });
+rgbeLoader.loadAsync("textures/hdr/002.hdr").then((texture) => {
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+  scene.background = texture;
+  scene.environment = texture;
+});
 
 // console.log(THREE);
 
-// 目标：灯光与阴影
-// 灯光阴影
-// 1.材质要满足能够对光照有反应
-// 2.设置渲染器开启阴影的计算 renderer.shadowMap.enabled = true
-// 3.设置光照投射阴影 directionalLight.castShadow = true
-// 4.设置物体投射阴影 sphere.castShadow = true
-// 5.设置物体接收阴影 plane.receiveShadow = true
+// 目标：经纬线映射贴图与HDR
 
 // 1.创建场景
 const scene = new THREE.Scene();
@@ -50,28 +44,17 @@ const envMapTexture = cubeTextureLoader.load([
 ]);
 const sphereGeometry = new THREE.SphereGeometry(1, 20, 20);
 const material = new THREE.MeshStandardMaterial({
-  //PBR 基于物理的渲染
-  // metalness: 0.7,
-  // roughness: 0.1,
+  metalness: 0.7,
+  roughness: 0.1,
   // envMap: envMapTexture,
 });
 const sphere = new THREE.Mesh(sphereGeometry, material);
-sphere.castShadow = true;
 scene.add(sphere);
 
-// 创建平面
-const planeGeometry = new THREE.PlaneGeometry(10, 10);
-const plane = new THREE.Mesh(planeGeometry, material);
-plane.position.set(0, -1, 0);
-plane.rotation.x = -Math.PI / 2;
-// 接收阴影
-plane.receiveShadow = true;
-scene.add(plane);
-
 // 给场景添加背景
-// scene.background = envMapTexture;
+scene.background = envMapTexture;
 // 给场景所有的物体添加默认的环境贴图
-// scene.environment = envMapTexture;
+scene.environment = envMapTexture;
 
 // 灯光
 // 环境光
@@ -80,11 +63,9 @@ scene.add(light);
 // 直线光
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
 directionalLight.position.set(10, 10, 10);
-directionalLight.castShadow = true;
 scene.add(directionalLight);
 // 初始化渲染器
 const renderer = new THREE.WebGLRenderer();
-renderer.shadowMap.enabled = true;
 // 设置渲染的尺寸大小
 renderer.setSize(window.innerWidth, window.innerHeight);
 // console.log(renderer);
