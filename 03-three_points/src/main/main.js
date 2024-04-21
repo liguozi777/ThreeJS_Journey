@@ -7,7 +7,7 @@ import gsap from "gsap";
 import * as dat from "dat.gui";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 
-// 目标：认识points
+// 目标：points材质
 
 const gui = new dat.GUI();
 // 1.创建场景
@@ -24,7 +24,7 @@ camera.position.set(0, 0, 10);
 scene.add(camera);
 
 // 创建球几何体
-const sphereGeometry = new THREE.SphereGeometry(3, 20, 20);
+const sphereGeometry = new THREE.SphereGeometry(3, 30, 30);
 // const material = new THREE.MeshBasicMaterial({
 //   color: 0xff0000,
 //   wireframe:true
@@ -32,9 +32,24 @@ const sphereGeometry = new THREE.SphereGeometry(3, 20, 20);
 // const mesh = new THREE.Mesh(sphereGeometry, material);
 // scene.add(mesh)
 // 设置点材质
-const pointMaterial = new THREE.PointsMaterial();
-pointMaterial.size = 0.1;
-const points = new THREE.Points(sphereGeometry, pointMaterial);
+const pointsMaterial = new THREE.PointsMaterial();
+pointsMaterial.size = 0.1;
+pointsMaterial.color.set(0xfff000);
+// 相机深度而衰减
+// pointMaterial.sizeAttenuation = true;
+// 载入纹理
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load("./textures/particles/1.png");
+// 设置点材质纹理
+console.log(texture);
+console.log(pointsMaterial);
+pointsMaterial.map = texture;
+pointsMaterial.alphaMap = texture;
+pointsMaterial.transparent = true;
+pointsMaterial.depthTest = false;
+pointsMaterial.blending = THREE.AdditiveBlending;
+
+const points = new THREE.Points(sphereGeometry, pointsMaterial);
 
 scene.add(points);
 // 初始化渲染器
