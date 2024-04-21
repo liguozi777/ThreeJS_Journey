@@ -7,7 +7,7 @@ import gsap from "gsap";
 import * as dat from "dat.gui";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 
-// 目标：使用points设置随机顶点打造星河
+// 目标：points材质
 
 const gui = new dat.GUI();
 // 1.创建场景
@@ -23,24 +23,14 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(0, 0, 10);
 scene.add(camera);
 
-const particlesGeometry = new THREE.BufferGeometry();
-const count = 5000;
-
-// 设置缓冲区数组
-const positions = new Float32Array(count * 3);
-// 设置粒子顶点颜色
-const colors = new Float32Array(count * 3);
-// 设置顶点
-for (let i = 0; i < count * 3; i++) {
-  positions[i] = Math.random() * 10 - 5;
-  colors[i] = Math.random();
-}
-particlesGeometry.setAttribute(
-  "position",
-  new THREE.BufferAttribute(positions, 3)
-);
-particlesGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-
+// 创建球几何体
+const sphereGeometry = new THREE.SphereGeometry(3, 30, 30);
+// const material = new THREE.MeshBasicMaterial({
+//   color: 0xff0000,
+//   wireframe:true
+// });
+// const mesh = new THREE.Mesh(sphereGeometry, material);
+// scene.add(mesh)
 // 设置点材质
 const pointsMaterial = new THREE.PointsMaterial();
 pointsMaterial.size = 0.1;
@@ -58,10 +48,8 @@ pointsMaterial.alphaMap = texture;
 pointsMaterial.transparent = true;
 pointsMaterial.depthTest = false;
 pointsMaterial.blending = THREE.AdditiveBlending;
-// 设置启用顶点颜色
-pointsMaterial.vertexColors = true;
 
-const points = new THREE.Points(particlesGeometry, pointsMaterial);
+const points = new THREE.Points(sphereGeometry, pointsMaterial);
 
 scene.add(points);
 // 初始化渲染器
