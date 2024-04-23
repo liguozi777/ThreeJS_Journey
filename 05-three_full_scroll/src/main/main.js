@@ -47,8 +47,86 @@ for (let i = 0; i < 5; i++) {
     }
   }
 }
-scene.add(cubeGroup)
+scene.add(cubeGroup);
+// 创建三角形酷炫
+var sjxGroup = new THREE.Group();
+var sjxMesh;
+for (let i = 0; i < 50; i++) {
+  // 每一个三角形，需要3个顶点，每个顶点需要3个值
+  const geometry = new THREE.BufferGeometry();
+  const positionArray = new Float32Array(9);
+  for (let j = 0; j < 9; j++) {
+    if (j % 3 == 1) {
+      positionArray[j] = Math.random() * 10 - 5;
+    } else {
+      positionArray[j] = Math.random() * 10 - 5;
+    }
+  }
+  geometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(positionArray, 3)
+  );
+  let color = new THREE.Color(Math.random(), Math.random(), Math.random());
+  const material = new THREE.MeshBasicMaterial({
+    color: color,
+    transparent: true,
+    opacity: 0.5,
+    side: THREE.DoubleSide,
+  });
+  // 根据几何体和材质创建物体
+  sjxMesh = new THREE.Mesh(geometry, material);
+  // console.log(sjxMesh);
+  sjxGroup.add(sjxMesh);
+}
+sjxGroup.position.set(0, -20, 0);
+scene.add(sjxGroup);
 
+// 弹跳小球
+var sphereGroup = new THREE.Group();
+const sphereGeometry = new THREE.SphereGeometry(1, 20, 20);
+const sphereMaterial = new THREE.MeshStandardMaterial({
+  //PBR 基于物理的渲染
+  // metalness: 0.7,
+  // roughness: 0.1,
+  // envMap: envMapTexture,
+});
+const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+sphere.castShadow = true;
+sphereGroup.add(sphere);
+
+// 创建平面
+const planeGeometry = new THREE.PlaneGeometry(50, 50);
+const plane = new THREE.Mesh(planeGeometry, sphereMaterial);
+plane.position.set(0, -1, 0);
+plane.rotation.x = -Math.PI / 2;
+// 接收阴影
+plane.receiveShadow = true;
+sphereGroup.add(plane);
+
+// 灯光
+// 点光源
+const light = new THREE.AmbientLight(0xffffff, 0.5);
+sphereGroup.add(light);
+
+const smallBall = new THREE.Mesh(
+  new THREE.SphereGeometry(0.1, 20, 20),
+  new THREE.MeshBasicMaterial({ color: 0xff0000 })
+);
+smallBall.position.set(2, 2, 2);
+
+// 直线光
+const pointLight = new THREE.PointLight(0xff0000, 10);
+// pointLight.position.set(2, 2, 2);
+pointLight.castShadow = true;
+// 设置阴影贴图模糊度
+pointLight.shadow.radius = 20;
+// 设置阴影贴图的分辨率
+pointLight.shadow.mapSize.set(4096, 4096);
+// 设置透视相机的属性
+smallBall.add(pointLight);
+sphereGroup.add(smallBall);
+sphereGroup.position.set(0, -40, 0);
+scene.add(sphereGroup);
 // 创建投射光线对象
 const raycaster = new THREE.Raycaster();
 // 鼠标的位置对象
@@ -61,7 +139,7 @@ window.addEventListener("click", (event) => {
   raycaster.setFromCamera(mouse, camera);
   let result = raycaster.intersectObjects(cuberArr);
   console.log(result);
-  if(result.length>0){
+  if (result.length > 0) {
     result[0].object.material = redMaterial;
   }
   // result.forEach(item=>{
@@ -111,8 +189,21 @@ window.addEventListener("dblclick", () => {
 });
 function render() {
   let time = clock.getElapsedTime();
-  cubeGroup.rotation.x = time*0.5;
-  cubeGroup.rotation.y = time*0.5;
+  cubeGroup.rotation.x = time * 0.5;
+  cubeGroup.rotation.y = time * 0.5;
+
+  sjxGroup.rotation.x = time * 0.4;
+  sjxGroup.rotation.z = time * 0.3;
+
+  smallBall.position.x = Math.sin(time) * 3;
+  smallBall.position.z = Math.cos(time) * 3;
+  smallBall.position.y = 2 + Math.sin(time * 10) / 2;
+
+  sphereGroup.rotation.z = Math.sin(time) * 0.05;
+  sphereGroup.rotation.x = Math.sin(time) * 0.05;
+
+  // 根据当前滚动的scrolly,去设置相机移动的位置
+  camera.position.y = -(window.scrollY / window.innerHeight) * 20;
   // controls.update();
   renderer.render(scene, camera);
   // 渲染下一帧的时候就会调用render函数
@@ -131,4 +222,15 @@ window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
   // 设置渲染器的像素比
   renderer.setPixelRatio(window.devicePixelRatio);
+});
+
+// 设置当前页
+let currentPage = 0;
+// 监听滚动事件
+window.addEventListener("scroll", () => {
+  const newPage = Math.round(window.scrollY / window.innerHeight);
+  if (newPage != currentPage) {
+    currentPage = newPage;
+    console.log("改变页面，当前是：" + currentPage);
+  }
 });

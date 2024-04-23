@@ -17,6 +17,8 @@ canvas {
   flex-direction: column;
   /* justify-content: center; */
   align-items: center;
+  position: relative;
+  z-index: 10;
 }
 .page h1 {
   margin: 60px;
