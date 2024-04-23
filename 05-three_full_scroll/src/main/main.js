@@ -40,7 +40,7 @@ for (let i = 0; i < 5; i++) {
   for (let j = 0; j < 5; j++) {
     for (let z = 0; z < 5; z++) {
       const cube = new THREE.Mesh(cubeGeometry, material);
-      cube.position.set(i * 2 - 5, j * 2 - 5, z * 2 - 5);
+      cube.position.set(i * 2 - 4, j * 2 - 5, z * 2 - 4);
       scene.add(cube);
       cubeGroup.add(cube);
       cuberArr.push(cube);
@@ -127,6 +127,9 @@ smallBall.add(pointLight);
 sphereGroup.add(smallBall);
 sphereGroup.position.set(0, -40, 0);
 scene.add(sphereGroup);
+
+let arrGroup = [cubeGroup, sjxGroup, sphereGroup];
+
 // 创建投射光线对象
 const raycaster = new THREE.Raycaster();
 // 鼠标的位置对象
@@ -187,20 +190,48 @@ window.addEventListener("dblclick", () => {
   //   animate1.resume();
   // }
 });
+gsap.to(cubeGroup.rotation, {
+  x: "+=" + Math.PI,
+  y: "+=" + Math.PI,
+  duration: 5,
+  ease: "power2.inOut",
+  repeat: -1,
+});
+gsap.to(sjxGroup.rotation, {
+  x: "+=" + Math.PI,
+  z: "-=" + Math.PI,
+  duration: 6,
+  ease: "power2.inOut",
+  repeat: -1,
+});
+gsap.to(smallBall.position, {
+  x: -3,
+  duration: 6,
+  ease: "power2.inOut",
+  repeat: -1,
+  yoyo: true,
+});
+gsap.to(smallBall.position, {
+  y: 0,
+  duration: 0.5,
+  ease: "power2.inOut",
+  repeat: -1,
+  yoyo: true,
+});
 function render() {
   let time = clock.getElapsedTime();
-  cubeGroup.rotation.x = time * 0.5;
-  cubeGroup.rotation.y = time * 0.5;
+  // cubeGroup.rotation.x = time * 0.5;
+  // cubeGroup.rotation.y = time * 0.5;
 
-  sjxGroup.rotation.x = time * 0.4;
-  sjxGroup.rotation.z = time * 0.3;
+  // sjxGroup.rotation.x = time * 0.4;
+  // sjxGroup.rotation.z = time * 0.3;
 
-  smallBall.position.x = Math.sin(time) * 3;
-  smallBall.position.z = Math.cos(time) * 3;
-  smallBall.position.y = 2 + Math.sin(time * 10) / 2;
+  // smallBall.position.x = Math.sin(time) * 3;
+  // smallBall.position.z = Math.cos(time) * 3;
+  // smallBall.position.y = 2 + Math.sin(time * 10) / 2;
 
-  sphereGroup.rotation.z = Math.sin(time) * 0.05;
-  sphereGroup.rotation.x = Math.sin(time) * 0.05;
+  // sphereGroup.rotation.z = Math.sin(time) * 0.05;
+  // sphereGroup.rotation.x = Math.sin(time) * 0.05;
 
   // 根据当前滚动的scrolly,去设置相机移动的位置
   camera.position.y = -(window.scrollY / window.innerHeight) * 20;
@@ -232,5 +263,9 @@ window.addEventListener("scroll", () => {
   if (newPage != currentPage) {
     currentPage = newPage;
     console.log("改变页面，当前是：" + currentPage);
+    gsap.to(arrGroup[currentPage].rotation, {
+      z: "+=" + Math.PI,
+      direction: 1,
+    });
   }
 });
