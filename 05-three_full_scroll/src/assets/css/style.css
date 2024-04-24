@@ -27,3 +27,6 @@ canvas {
 .page h3 {
   font-size: 30px;
 }
+::-webkit-scrollbar{
+  display: none;
+}
