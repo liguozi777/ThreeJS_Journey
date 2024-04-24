@@ -134,6 +134,11 @@ let arrGroup = [cubeGroup, sjxGroup, sphereGroup];
 const raycaster = new THREE.Raycaster();
 // 鼠标的位置对象
 const mouse = new THREE.Vector2();
+
+window.addEventListener("mousemove", (event) => {
+  mouse.x = event.clientX / window.innerWidth - 0.5;
+  mouse.y = event.clientY / window.innerHeight - 0.5;
+});
 // 监听鼠标位置
 window.addEventListener("click", (event) => {
   // console.log(event);
@@ -219,7 +224,8 @@ gsap.to(smallBall.position, {
   yoyo: true,
 });
 function render() {
-  let time = clock.getElapsedTime();
+  // let time = clock.getElapsedTime();
+  let deltaTime = clock.getDelta();
   // cubeGroup.rotation.x = time * 0.5;
   // cubeGroup.rotation.y = time * 0.5;
 
@@ -235,6 +241,7 @@ function render() {
 
   // 根据当前滚动的scrolly,去设置相机移动的位置
   camera.position.y = -(window.scrollY / window.innerHeight) * 20;
+  camera.position.x += (mouse.x * 10 - camera.position.x) * deltaTime;
   // controls.update();
   renderer.render(scene, camera);
   // 渲染下一帧的时候就会调用render函数
@@ -282,7 +289,7 @@ window.addEventListener("scroll", () => {
       {
         x: 0,
         rotate: "+=360",
-        duration:1
+        duration: 1,
       }
     );
   }
