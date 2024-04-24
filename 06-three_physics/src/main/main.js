@@ -6,10 +6,10 @@ import gsap from "gsap";
 // 导入dat.gui
 import * as dat from "dat.gui";
 // 导入connon引擎
-import * as CANNON from 'cannon'
+import * as CANNON from "cannon";
 
 // 目标：使用cannon引擎
-console.log(CANNON)
+console.log(CANNON);
 
 const gui = new dat.GUI();
 // 1.创建场景
@@ -25,7 +25,48 @@ const camera = new THREE.PerspectiveCamera(
 // 设置相机位置
 camera.position.set(0, 0, 18);
 scene.add(camera);
- 
+
+// 创建球和平面
+const sphereGeometry = new THREE.SphereGeometry(1, 20, 20);
+const sphereMaterial = new THREE.MeshStandardMaterial();
+const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+sphere.castShadow = true;
+scene.add(sphere);
+
+const floor = new THREE.Mesh(
+  new THREE.PlaneGeometry(20, 20),
+  new THREE.MeshStandardMaterial()
+);
+floor.position.set(0, -5, 0);
+floor.rotation.x = -Math.PI / 2;
+floor.receiveShadow = true;
+scene.add(floor);
+// 创建物理世界
+const world = new CANNON.World();
+world.gravity.set(0, -9.8, 0);
+// 创建物理小球
+const sphereShape = new CANNON.Sphere(1);
+// 设置物体材质
+const sphereWorldMaterial = new CANNON.Material();
+// 物理世界的物体
+const sphereBody = new CANNON.Body({
+  shape: sphereShape,
+  position: new CANNON.Vec3(0, 0, 0),
+  // 小球质量
+  mass: 1,
+  // 物体材质
+  material: sphereWorldMaterial,
+});
+// 将物体添加至物理世界
+world.addBody(sphereBody);
+
+// 添加环境光和平行光
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+dirLight.castShadow = true;
+scene.add(dirLight);
+
 // 初始化渲染器
 const renderer = new THREE.WebGLRenderer({ alpha: true });
 // 设置渲染的尺寸大小
@@ -65,11 +106,13 @@ window.addEventListener("dblclick", () => {
   //   // 恢复
   //   animate1.resume();
   // }
-}); 
+});
 function render() {
   // let time = clock.getElapsedTime();
-  let deltaTime = clock.getDelta(); 
-
+  let deltaTime = clock.getDelta();
+  //  更新物理引擎里世界的物体
+  world.step(1 / 120, deltaTime);
+  sphere.position.copy(sphereBody.position);
   // controls.update();
   renderer.render(scene, camera);
   // 渲染下一帧的时候就会调用render函数
@@ -89,4 +132,3 @@ window.addEventListener("resize", () => {
   // 设置渲染器的像素比
   renderer.setPixelRatio(window.devicePixelRatio);
 });
- 
