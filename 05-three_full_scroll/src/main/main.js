@@ -266,6 +266,24 @@ window.addEventListener("scroll", () => {
     gsap.to(arrGroup[currentPage].rotation, {
       z: "+=" + Math.PI,
       direction: 1,
+      onComplete: () => {
+        console.log("旋转完成");
+      },
     });
+    // gsap.to(`.page${currentPage} h1`, {
+    //   rotate: "+=360",
+    //   duration: 1,
+    // });
+    gsap.fromTo(
+      `.page${currentPage} h1`,
+      {
+        X: -300,
+      },
+      {
+        x: 0,
+        rotate: "+=360",
+        duration:1
+      }
+    );
   }
 });
