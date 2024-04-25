@@ -49,6 +49,10 @@ function createCube() {
     // 物体材质
     material: cubeWorldMaterial,
   });
+  cubeBody.applyLocalForce(
+    new CANNON.Vec3(180, 0, 0), // 添加的力的大小和方向
+    new CANNON.Vec3(0, 0, 0) // 施加的力所在的位置
+  );
   // 将物体添加至物理世界
   world.addBody(cubeBody);
 
