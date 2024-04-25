@@ -60,6 +60,21 @@ const sphereBody = new CANNON.Body({
 // 将物体添加至物理世界
 world.addBody(sphereBody);
 
+// 创建击打声音
+const hitSound = new Audio("assets/metalHit.mp3");
+
+// 添加监听碰撞事件
+function HitEvent(e) {
+  // 获取碰撞的强度
+  console.log(e);
+  const impactStrength = e.contact.getImpactVelocityAlongNormal();
+  console.log(impactStrength);
+  if(impactStrength>5){
+    hitSound.play();
+  }
+}
+sphereBody.addEventListener("collide", HitEvent);
+
 // 物理世界创建地面
 const floorShape = new CANNON.Plane();
 const floorBody = new CANNON.Body();
@@ -70,7 +85,7 @@ floorBody.addShape(floorShape);
 floorBody.position.set(0, -5, 0);
 // 旋转地面的位置
 floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
-world.addBody(floorBody)
+world.addBody(floorBody);
 
 // 添加环境光和平行光
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
